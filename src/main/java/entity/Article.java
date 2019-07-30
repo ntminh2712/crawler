@@ -2,23 +2,33 @@ package entity;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+
+import java.util.Calendar;
 
 @Entity
 public class Article {
 
     @Id
+    private long id;
     private String url;
     private String title;
     private String description;
     private String content;
     private String author;
-    private long sourceId;
-    private long createdAtMLS;
-    private long updatedAtMLS;
-    private long deletedAtMLS;
+    private String link;
+    private long category_id;
+    private long source_id;
+    private long created_at;
+    private long update_at;
+    @Index
     private int status;
 
     public Article() {
+        this.id = Calendar.getInstance().getTimeInMillis();
+        this.created_at = Calendar.getInstance().getTimeInMillis();
+        this.update_at = Calendar.getInstance().getTimeInMillis();
+        this.status = 1;
     }
 
 
@@ -63,28 +73,28 @@ public class Article {
         this.author = author;
     }
 
-    public long getCreatedAtMLS() {
-        return createdAtMLS;
+    public long getId() {
+        return id;
     }
 
-    public void setCreatedAtMLS(long createdAtMLS) {
-        this.createdAtMLS = createdAtMLS;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public long getUpdatedAtMLS() {
-        return updatedAtMLS;
+    public long getCreated_at() {
+        return created_at;
     }
 
-    public void setUpdatedAtMLS(long updatedAtMLS) {
-        this.updatedAtMLS = updatedAtMLS;
+    public void setCreated_at(long created_at) {
+        this.created_at = created_at;
     }
 
-    public long getDeletedAtMLS() {
-        return deletedAtMLS;
+    public long getUpdate_at() {
+        return update_at;
     }
 
-    public void setDeletedAtMLS(long deletedAtMLS) {
-        this.deletedAtMLS = deletedAtMLS;
+    public void setUpdate_at(long update_at) {
+        this.update_at = update_at;
     }
 
     public int getStatus() {
@@ -95,11 +105,31 @@ public class Article {
         this.status = status;
     }
 
-    public long getSourceId() {
-        return sourceId;
+    public long getSource_id() {
+        return source_id;
     }
 
-    public void setSourceId(long sourceId) {
-        this.sourceId = sourceId;
+    public void setSource_id(long source_id) {
+        this.source_id = source_id;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public long getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(long category_id) {
+        this.category_id = category_id;
+    }
+
+    public boolean isDeactive() {
+        return this.status == 0 || this.status == -1;
     }
 }

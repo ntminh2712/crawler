@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 import entity.Article;
 import entity.CrawlerSource;
+import entity.Source;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,9 +24,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class GetQueue extends HttpServlet {
     private static Queue q = QueueFactory.getQueue("add-queue");
-    static {
-        ObjectifyService.register(Article.class);
-    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<TaskHandle> tasks = q.leaseTasks(10, TimeUnit.SECONDS, 1);
@@ -33,15 +33,22 @@ public class GetQueue extends HttpServlet {
             String articleObjectJson = new String(taskHandle.getPayload());
             Article article = new Gson().fromJson(articleObjectJson, Article.class);
             Document document = Jsoup.connect(article.getUrl()).ignoreContentType(true).get();
-
-            CrawlerSource crawlerSource = AddQueue.crawlerSource; // lấy source theo id của article từ database;
-            String title = document.select(crawlerSource.getTitleSelector()).text();
-            String description = document.select(crawlerSource.getDescriptionSelector()).text();
-            String content = document.select(crawlerSource.getContentSelector()).text();
+            Source source = ofy().load().type(Source.class).id(article.getSource_id()).now();
+            String title = document.select(source.getTitle_selector()).text();
+            String author = document.select(source.getAuthor_selector()).text();
+            String description = document.select(source.getDescription_selector()).text();
+            String link = document.select(source.getLink_selector()).text();
+            String content = document.select(source.getContent_selector()).html();
+            article.setId(Calendar.getInstance().getTimeInMillis());
             article.setTitle(title);
             article.setDescription(description);
             article.setContent(content);
-            System.out.print("get queue");
+            article.setAuthor(author);
+            article.setLink(link);
+            article.setStatus(1);
+            article.setCategory_id(source.getCategory_id());
+            article.setUpdate_at(Calendar.getInstance().getTimeInMillis());
+            article.setCreated_at(Calendar.getInstance().getTimeInMillis());
             ofy().save().entity(article).now();
         }
 
