@@ -37,19 +37,22 @@ public class GetQueue extends HttpServlet {
             String title = document.select(source.getTitle_selector()).text();
             String author = document.select(source.getAuthor_selector()).text();
             String description = document.select(source.getDescription_selector()).text();
-            String link = document.select(source.getLink_selector()).text();
+            String link = article.getUrl();
             String content = document.select(source.getContent_selector()).html();
             article.setId(Calendar.getInstance().getTimeInMillis());
             article.setTitle(title);
             article.setDescription(description);
             article.setContent(content);
             article.setAuthor(author);
-            article.setLink(link);
             article.setStatus(1);
+            article.setLink(link);
             article.setCategory_id(source.getCategory_id());
             article.setUpdate_at(Calendar.getInstance().getTimeInMillis());
             article.setCreated_at(Calendar.getInstance().getTimeInMillis());
-            ofy().save().entity(article).now();
+            if(ofy().load().type(Article.class).filter("link", article.getLink()).list() == null || ofy().load().type(Article.class).filter("link", article.getLink()).list().size() == 0){
+                ofy().save().entity(article).now();
+            }
+
         }
 
     }

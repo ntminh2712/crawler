@@ -8,6 +8,7 @@ public final class ArticleBuilder {
     private String content;
     private String author;
     private String link;
+    private String thumnail;
     private long category_id;
     private long source_id;
     private long created_at;
@@ -56,6 +57,11 @@ public final class ArticleBuilder {
         return this;
     }
 
+    public ArticleBuilder withThumnail(String thumnail) {
+        this.thumnail = thumnail;
+        return this;
+    }
+
     public ArticleBuilder withCategory_id(long category_id) {
         this.category_id = category_id;
         return this;
@@ -90,6 +96,7 @@ public final class ArticleBuilder {
         article.setContent(content);
         article.setAuthor(author);
         article.setLink(link);
+        article.setThumnail(thumnail);
         article.setCategory_id(category_id);
         article.setSource_id(source_id);
         article.setCreated_at(created_at);

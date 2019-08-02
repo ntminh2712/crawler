@@ -13,7 +13,7 @@ public class CrawlerSource {
     private String url;
     private String linkSelector;
     private int linkLimit;
-
+    private String thumnailSelector;
     private String titleSelector;
     private String descriptionSelector;
     private String contentSelector;
@@ -32,6 +32,14 @@ public class CrawlerSource {
         this.createdAtMLS = Calendar.getInstance().getTimeInMillis();
         this.updatedAtMLS = Calendar.getInstance().getTimeInMillis();
         this.status = 1;
+    }
+
+    public String getThumnailSelector() {
+        return thumnailSelector;
+    }
+
+    public void setThumnailSelector(String thumnailSelector) {
+        this.thumnailSelector = thumnailSelector;
     }
 
     public long getId() {

@@ -2,6 +2,9 @@ package api;
 
 import Util.StringUtil;
 import com.google.gson.Gson;
+import dto.ArticleDto;
+import dto.SourceDto;
+import entity.Article;
 import entity.Category;
 import entity.JsonResponse;
 import entity.Source;
@@ -11,7 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,11 +39,17 @@ public class SourceApi extends HttpServlet {
     }
 
     private void getListSource(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        List<SourceDto> listSourceDto = new ArrayList<>();
+        List<Source> list = ofy().load().type(Source.class).filter("status", 1).list();
+        for (Source source: list){
+            Category category = ofy().load().type(Category.class).id(source.getCategory_id()).now();
+            listSourceDto.add( new SourceDto(source,category));
+        }
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().println(new JsonResponse()
                 .setStatus(HttpServletResponse.SC_OK)
                 .setMessage("Success!")
-                .setData(ofy().load().type(Source.class).filter("status", 1).list())
+                .setData(listSourceDto)
                 .toJsonString());
 
     }
@@ -53,11 +64,12 @@ public class SourceApi extends HttpServlet {
                     .toJsonString());
             return;
         }
+        Category category = ofy().load().type(Category.class).id(source.getCategory_id()).now();
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().println(new JsonResponse()
                 .setStatus(HttpServletResponse.SC_OK)
                 .setMessage("Success!")
-                .setData(source)
+                .setData(new SourceDto(source,category))
                 .toJsonString());
     }
 

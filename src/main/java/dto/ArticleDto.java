@@ -1,13 +1,12 @@
-package entity;
+package dto;
 
-import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import entity.Article;
+import entity.Category;
+import entity.Source;
 
-import java.util.Calendar;
-
-@Entity
-public class Article {
+public class ArticleDto {
 
     @Id
     private long id;
@@ -16,25 +15,42 @@ public class Article {
     private String description;
     private String content;
     private String author;
-    @Index
     private String link;
     private String thumnail;
-    @Index
-    private long category_id;
-    private long source_id;
+    private Category category;
+    private Source source;
     private long created_at;
     private long update_at;
     @Index
     private int status;
 
-    public Article() {
-        this.id = Calendar.getInstance().getTimeInMillis();
-        this.created_at = Calendar.getInstance().getTimeInMillis();
-        this.update_at = Calendar.getInstance().getTimeInMillis();
-        this.status = 1;
+    public ArticleDto() {
+
     }
 
+    public ArticleDto(Article article, Category category, Source source) {
+        this.id = article.getId();
+        this.url = article.getUrl();
+        this.title = article.getTitle();
+        this.description = article.getDescription();
+        this.content = article.getContent();
+        this.author = article.getAuthor();
+        this.link = article.getLink();
+        this.category = category;
+        this.source = source;
+        this.thumnail = article.getThumnail();
+        this.created_at = article.getCreated_at();
+        this.update_at = article.getUpdate_at();
+        this.status = article.getStatus();
+    }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getUrl() {
         return url;
@@ -76,12 +92,28 @@ public class Article {
         this.author = author;
     }
 
-    public long getId() {
-        return id;
+    public String getLink() {
+        return link;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
     }
 
     public long getCreated_at() {
@@ -106,41 +138,5 @@ public class Article {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public long getSource_id() {
-        return source_id;
-    }
-
-    public void setSource_id(long source_id) {
-        this.source_id = source_id;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public long getCategory_id() {
-        return category_id;
-    }
-
-    public String getThumnail() {
-        return thumnail;
-    }
-
-    public void setThumnail(String thumnail) {
-        this.thumnail = thumnail;
-    }
-
-    public void setCategory_id(long category_id) {
-        this.category_id = category_id;
-    }
-
-    public boolean isDeactive() {
-        return this.status == 0 || this.status == -1;
     }
 }
