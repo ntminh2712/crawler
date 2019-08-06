@@ -31,10 +31,9 @@ public class ArticleApi extends HttpServlet {
         String strCategoryId = req.getParameter("category");
         String limit = req.getParameter("limit");
         String off_set = req.getParameter("off_set");
-        if (strId != null || strId.length() != 0) {
+        if (strId != null ) {
             getdetailArticle(req, resp, strId);
-
-        }else if (strCategoryId != null || strCategoryId.length() != 0)  {
+        }else if (strCategoryId == null)  {
             if (limit == null || off_set == null) {
                 getListArticle(req, resp, "10", "0");
             } else {
@@ -52,7 +51,7 @@ public class ArticleApi extends HttpServlet {
 
     private void getListArticleCategory(HttpServletRequest req, HttpServletResponse resp, String strCategoryId, String limit, String off_set) throws IOException {
         List<ArticleDto> listArticleDto = new ArrayList<>();
-        List<Article> list = ofy().load().type(Article.class).filter("status",1).filter("category",strCategoryId).offset(Integer.parseInt(off_set)).limit(Integer.parseInt(limit)).list();
+        List<Article> list = ofy().load().type(Article.class).filter("category_id",Long.parseLong(strCategoryId)).filter("status",1).offset(Integer.parseInt(off_set)).limit(Integer.parseInt(limit)).list();
         for (Article article: list){
             Category category = ofy().load().type(Category.class).id(article.getCategory_id()).now();
             Source source = ofy().load().type(Source.class).id(article.getSource_id()).now();

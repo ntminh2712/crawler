@@ -12,6 +12,22 @@
         <url-pattern>/api/v1/source</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>AccountApi</servlet-name>
+        <servlet-class>api.AccountApi</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AccountApi</servlet-name>
+        <url-pattern>/api/v1/account</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ActiveCodeApi</servlet-name>
+        <servlet-class>api.ActiveCodeApi</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ActiveCodeApi</servlet-name>
+        <url-pattern>/api/v1/active</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>ArticleApi</servlet-name>
         <servlet-class>api.ArticleApi</servlet-class>
     </servlet>
