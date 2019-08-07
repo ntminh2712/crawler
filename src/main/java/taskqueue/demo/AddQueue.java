@@ -31,11 +31,9 @@ public class AddQueue extends HttpServlet {
         for (Source source : listSource) {
             Document document = Jsoup.connect(source.getUrl()).ignoreContentType(true).get();
             Elements elementsLink = document.select(source.getLink_selector());
-            Elements elementsThumnail = document.select(source.getThumnail_selector());
             for (int i = 0; i < elementsLink.size() - 1;i ++ ){
                 String url = elementsLink.get(i).attr("href").trim();
-                String thumnail = elementsThumnail.get(i).attr("src").trim();
-                Article article = ArticleBuilder.anArticle().withCategory_id(source.getCategory_id()).withThumnail(thumnail).withUrl(url).withSource_id(source.getId()).build();
+                Article article = ArticleBuilder.anArticle().withCategory_id(source.getCategory_id()).withUrl(url).withSource_id(source.getId()).build();
                 q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL).payload(new Gson().toJson(article)));
             }
         }

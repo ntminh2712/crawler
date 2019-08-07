@@ -10,6 +10,8 @@ import entity.CrawlerSource;
 import entity.Source;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,6 +35,19 @@ public class GetQueue extends HttpServlet {
             String articleObjectJson = new String(taskHandle.getPayload());
             Article article = new Gson().fromJson(articleObjectJson, Article.class);
             Document document = Jsoup.connect(article.getUrl()).ignoreContentType(true).get();
+            Elements metaTags = document.getElementsByTag("meta");
+            for (Element metaTag : metaTags) {
+                String contentTag = metaTag.attr("content");
+                String name = metaTag.attr("name");
+                String property = metaTag.attr("property");
+
+                if("description".equals(name)) {
+                    article.setDescription(contentTag);
+                }
+                if("og:image".equals(property)) {
+                    article.setThumnail(contentTag);
+                }
+            }
             Source source = ofy().load().type(Source.class).id(article.getSource_id()).now();
             String title = document.select(source.getTitle_selector()).text();
             String author = document.select(source.getAuthor_selector()).text();
