@@ -44,7 +44,7 @@ public class GetQueue extends HttpServlet {
             article.setDescription(description);
             article.setContent(content);
             article.setAuthor(author);
-            article.setStatus(1);
+            article.setStatus(-1);
             article.setLink(link);
             article.setCategory_id(source.getCategory_id());
             article.setUpdate_at(Calendar.getInstance().getTimeInMillis());
