@@ -19,14 +19,7 @@
         <servlet-name>AccountApi</servlet-name>
         <url-pattern>/api/v1/account</url-pattern>
     </servlet-mapping>
-    <filter>
-        <filter-name>CorsFilter</filter-name>
-        <filter-class>filter.CorsFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>CorsFilter</filter-name>
-        <url-pattern>*</url-pattern>
-    </filter-mapping>
+
     <servlet>
         <servlet-name>ArticleApproval</servlet-name>
         <servlet-class>api.ArticleApproval</servlet-class>
@@ -100,11 +93,19 @@
         <url-pattern>/task/add</url-pattern>
     </servlet-mapping>
     <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>filter.CorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>ObjectifyFilter</filter-name>
-        <url-pattern>*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>
