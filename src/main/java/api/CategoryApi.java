@@ -2,10 +2,7 @@ package api;
 
 import Util.StringUtil;
 import com.google.gson.Gson;
-import entity.Article;
-import entity.Category;
-import entity.JsonResponse;
-import entity.Source;
+import entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,7 +65,7 @@ public class CategoryApi extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String content = StringUtil.convertInputStreamToString(req.getInputStream());
-            Category category = gson.fromJson(content, Category.class);
+            CategoryParamester category = gson.fromJson(content, CategoryParamester.class);
             ofy().save().entities(category).now();
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().println(new JsonResponse()
@@ -134,7 +131,7 @@ public class CategoryApi extends HttpServlet {
             return;
         }
         String content = StringUtil.convertInputStreamToString(req.getInputStream());
-        Category updateVideo = gson.fromJson(content, Category.class);
+        CategoryParamester updateVideo = gson.fromJson(content, CategoryParamester.class);
         existCategory.setName(updateVideo.getName());
         existCategory.setDescription(updateVideo.getDescription());
         ofy().save().entity(existCategory).now();

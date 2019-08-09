@@ -3,10 +3,7 @@ package api;
 import Util.StringUtil;
 import com.google.gson.Gson;
 import dto.ArticleDto;
-import entity.Article;
-import entity.Category;
-import entity.JsonResponse;
-import entity.Source;
+import entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,20 +47,20 @@ public class ArticleApi extends HttpServlet {
     }
 
     private void getListArticleCategory(HttpServletRequest req, HttpServletResponse resp, String strCategoryId, String limit, String off_set) throws IOException {
-        List<ArticleDto> listArticleDto = new ArrayList<>();
-        List<Article> list = ofy().load().type(Article.class).filter("category_id",Long.parseLong(strCategoryId)).filter("status",1).offset(Integer.parseInt(off_set)).limit(Integer.parseInt(limit)).list();
-        for (Article article: list){
-            Category category = ofy().load().type(Category.class).id(article.getCategory_id()).now();
-            Source source = ofy().load().type(Source.class).id(article.getSource_id()).now();
-            listArticleDto.add( new ArticleDto(article,category,source));
+            List<ArticleDto> listArticleDto = new ArrayList<>();
+            List<Article> list = ofy().load().type(Article.class).filter("category_id", Long.parseLong(strCategoryId)).filter("status", 1).offset(Integer.parseInt(off_set)).limit(Integer.parseInt(limit)).list();
+            for (Article article : list) {
+                Category category = ofy().load().type(Category.class).id(article.getCategory_id()).now();
+                Source source = ofy().load().type(Source.class).id(article.getSource_id()).now();
+                listArticleDto.add(new ArticleDto(article, category, source));
+            }
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().println(new JsonResponse()
+                    .setStatus(HttpServletResponse.SC_OK)
+                    .setMessage("Success!")
+                    .setData(listArticleDto)
+                    .toJsonString());
         }
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().println(new JsonResponse()
-                .setStatus(HttpServletResponse.SC_OK)
-                .setMessage("Success!")
-                .setData(listArticleDto)
-                .toJsonString());
-    }
 
     private void getListArticle(HttpServletRequest req, HttpServletResponse resp, String limit, String off_set) throws IOException {
         List<ArticleDto> listArticleDto = new ArrayList<>();

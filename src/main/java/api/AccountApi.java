@@ -2,15 +2,15 @@ package api;
 
 import Util.StringUtil;
 import com.google.gson.Gson;
-import entity.Account;
-import entity.ActiveCode;
-import entity.Article;
-import entity.JsonResponse;
+import entity.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Properties;
 import java.util.Random;
@@ -29,6 +29,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class AccountApi extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(ArticleApi.class.getName());
     private static Gson gson = new Gson();
+    private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -61,45 +63,63 @@ public class AccountApi extends HttpServlet {
                     .toJsonString());
         }
     }
+
     private long generateActivecode() {
         Random rnd = new Random();
         long n = 100000 + rnd.nextInt(900000);
         return n;
     }
+
     private void login(String email,HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Account account = ofy().load().type(Account.class).id(email).now();
         ActiveCode activeCode = new ActiveCode();
         activeCode.setTimeRevoke(Calendar.getInstance().getTimeInMillis() + 900000);
+        Credential credential = generateNewCredential();
         activeCode.setCode(generateActivecode());
         account.setCode_active(activeCode);
+        account.setToken(credential.getToken());
+        ofy().save().entities(credential);
         ofy().save().entities(account).now();
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         resp.getWriter().println(new JsonResponse()
                 .setStatus(HttpServletResponse.SC_ACCEPTED)
-                .setMessage("Please check your email to login!")
-                .setData(account).toJsonString());
+                .setMessage("Please check your email to login!").toJsonString());
         sendMail("minhntd00562@fpt.edu.vn", account.getEmail(),account.getFull_name(), "Account Login", activeCode.getCode());
     }
+
+    public static Credential generateNewCredential() {
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        Credential credential = new Credential();
+        credential.setToken(base64Encoder.encodeToString(randomBytes));
+        credential.setTimeRevoke(Calendar.getInstance().getTimeInMillis()+ 10*60*60);
+        return credential;
+    }
+
     private void register(Account account,HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Account accountExists = ofy().load().type(Account.class).id(account.getEmail()).now();
         if (accountExists != null) {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.getWriter().println(new JsonResponse()
-                    .setStatus(HttpServletResponse.SC_CREATED)
-                    .setMessage("This email already exists"));
+                    .setStatus(HttpServletResponse.SC_NOT_FOUND)
+                    .setMessage("This email already exists").toJsonString());
             return;
         }
+
         account.setStatus(0);
         ActiveCode activeCode = new ActiveCode();
         activeCode.setTimeRevoke(Calendar.getInstance().getTimeInMillis() + 900000);
         activeCode.setCode(generateActivecode());
         account.setCode_active(activeCode);
+        Credential credential = generateNewCredential();
+        account.setCode_active(activeCode);
+        account.setToken(credential.getToken());
+        ofy().save().entities(credential);
         ofy().save().entities(account).now();
         resp.setStatus(HttpServletResponse.SC_CREATED);
         resp.getWriter().println(new JsonResponse()
                 .setStatus(HttpServletResponse.SC_CREATED)
-                .setMessage("Register successfully, Please check your email to active account!")
-                .setData(account).toJsonString());
+                .setMessage("Register successfully, Please check your email to active account!").toJsonString());
         sendMail("minhntd00562@fpt.edu.vn", account.getEmail(),account.getFull_name(), "Active account", activeCode.getCode());
     }
 

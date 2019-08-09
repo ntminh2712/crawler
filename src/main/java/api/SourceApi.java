@@ -4,10 +4,7 @@ import Util.StringUtil;
 import com.google.gson.Gson;
 import dto.ArticleDto;
 import dto.SourceDto;
-import entity.Article;
-import entity.Category;
-import entity.JsonResponse;
-import entity.Source;
+import entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -77,7 +74,7 @@ public class SourceApi extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String content = StringUtil.convertInputStreamToString(req.getInputStream());
-            Source source = gson.fromJson(content, Source.class);
+            SourceParamester source = gson.fromJson(content, SourceParamester.class);
             Category category = ofy().load().type(Category.class).id(source.getCategory_id()).now();
             if (category == null) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -151,7 +148,7 @@ public class SourceApi extends HttpServlet {
             return;
         }
         String content = StringUtil.convertInputStreamToString(req.getInputStream());
-        Source updateSource = gson.fromJson(content, Source.class);
+        SourceParamester updateSource = gson.fromJson(content, SourceParamester.class);
         existSource.setUrl(updateSource.getUrl());
         existSource.setTitle_selector(updateSource.getTitle_selector());
         existSource.setLink_selector(updateSource.getLink_selector());

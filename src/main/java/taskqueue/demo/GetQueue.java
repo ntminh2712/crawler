@@ -28,7 +28,7 @@ public class GetQueue extends HttpServlet {
     private static Queue q = QueueFactory.getQueue("add-queue");
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<TaskHandle> tasks = q.leaseTasks(10, TimeUnit.SECONDS, 1);
         if (tasks.size() > 0) {
             TaskHandle taskHandle = tasks.get(0);

@@ -19,11 +19,19 @@
         <servlet-name>AccountApi</servlet-name>
         <url-pattern>/api/v1/account</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>AddSpecialContent</servlet-name>
+        <url-pattern>/api/v1/article/special</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddSpecialContent</servlet-name>
+        <servlet-class>api.AddSpecialContent</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>ArticleApproval</servlet-name>
         <servlet-class>api.ArticleApproval</servlet-class>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>ArticleApproval</servlet-name>
         <url-pattern>/api/v1/article/approval</url-pattern>

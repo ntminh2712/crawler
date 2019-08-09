@@ -1,10 +1,7 @@
 package filter;
 
 import com.googlecode.objectify.ObjectifyService;
-import entity.Account;
-import entity.Article;
-import entity.Category;
-import entity.Source;
+import entity.*;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +19,7 @@ public class ObjectifyRegisterFilter implements Filter {
         ObjectifyService.register(Category.class);
         ObjectifyService.register(Source.class);
         ObjectifyService.register(Account.class);
+        ObjectifyService.register(Credential.class);
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");

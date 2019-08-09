@@ -16,6 +16,8 @@ public class Account {
     private String phone;
     private ActiveCode code_active;
     @Index
+    private String token;
+    @Index
     private int status;
     private long updated_at;
     private long created_at;
@@ -81,5 +83,13 @@ public class Account {
 
     public void setCode_active(ActiveCode code_active) {
         this.code_active = code_active;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
